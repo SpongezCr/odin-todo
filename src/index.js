@@ -43,12 +43,8 @@ function displayProjects() {
             li.textContent = `${todo.title}, due ${todo.dueDate}`;
             li.classList.add("todo");
             li.id = todo.id;
-            // li["data-project-id"] = project.id;
-
-            li.addEventListener('click', () => displayToDo(project, this.id));
-
+            li.addEventListener('click', () => displayToDo(project, li.id));
             ul.appendChild(li);
-
         })
     
         h3.addEventListener('click', () => {
@@ -65,5 +61,32 @@ function displayProjects() {
 }
 
 function displayToDo(project, id) {
-    project.removeToDo(id);    
+
+    right.innerHTML = "";
+
+    let todo = project.toDos.find(todo => id === todo.id);
+
+    const title = document.createElement("div");
+    title.textContent = todo.title;
+    right.appendChild(title);
+
+    const description = document.createElement("div");
+    description.textContent = todo.description;
+    right.appendChild(description);
+
+    const dueDate = document.createElement("div");
+    dueDate.textContent = todo.dueDate;
+    right.appendChild(dueDate);
+
+    const priority = document.createElement("div");
+    priority.textContent = todo.priority;
+    right.appendChild(priority);
+
+    const notes = document.createElement("div");
+    notes.textContent = todo.notes;
+    right.appendChild(notes);
+
+    const checkList = document.createElement("div");
+    checkList.textContent = todo.checkList;
+    right.appendChild(checkList);
 }
