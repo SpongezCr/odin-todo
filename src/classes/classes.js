@@ -14,6 +14,10 @@ class ToDo {
 
 }
 
+
+
+
+
 class Project {
 
     constructor(name) {
@@ -32,6 +36,10 @@ class Project {
     }
 };
 
+
+
+
+
 export const projectList = (() => {
     const projects = [(new Project("Default"))];
 
@@ -40,12 +48,12 @@ export const projectList = (() => {
     }
     
     function createProject(projectName) {
-        _projects.push(new Project(projectName));
+        projects.push(new Project(projectName));
     }
 
     function deleteProject(projectId) {
         let index = projects.findIndex((project) => project.id === projectId);
-        _projects.splice(index,1);
+        projects.splice(index,1);
     }
 
     function getProjects() {return projects;}
