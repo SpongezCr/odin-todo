@@ -3,7 +3,7 @@
 class ToDo {
 
     constructor(title, description, dueDate, priority, notes, checkList) {
-        this.id = crypto.randomUUID();
+        this.id = "id-" +crypto.randomUUID();
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
@@ -15,13 +15,10 @@ class ToDo {
 }
 
 
-
-
-
 class Project {
 
     constructor(name) {
-        this.id = crypto.randomUUID();
+        this.id = "id-" + crypto.randomUUID();
         this.name = name;
         this.toDos = [new ToDo("title","description",1,1,1,1)];
     }
@@ -49,6 +46,7 @@ export const projectList = (() => {
     
     function createProject(projectName) {
         projects.push(new Project(projectName));
+        return projects.at(-1);
     }
 
     function deleteProject(projectId) {
