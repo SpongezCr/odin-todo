@@ -1,6 +1,8 @@
 
 
-class ToDo {
+export class ToDo {
+
+    static todoAttributes = ["title", "description", "dueDate", "priority", "notes", "checklist"];
 
     constructor(title, description, dueDate, priority, notes, checkList) {
         this.id = "id-" +crypto.randomUUID();
@@ -10,6 +12,21 @@ class ToDo {
         this.priority = priority;
         this.notes = notes;
         this.checkList = checkList;
+    }
+
+    setValues(t, d, dd, p, n, cl) {
+        this.title = t;
+        this.description = d;
+        this.dueDate = dd;
+        this.priority = p;
+        this.notes = n;
+        this.checkList = cl;
+    }
+
+    setValuesWithArray(arr) {
+        for (let i = 0; i < arr.length; i++) {
+            this[ToDo.todoAttributes[i]] = arr[i];
+        }
     }
 
 }

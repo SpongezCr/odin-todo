@@ -1,6 +1,6 @@
 'use strict';
 import "./style.css";
-import { projectList } from "./classes/classes";
+import { projectList, ToDo } from "./classes/classes";
 
 const left = document.querySelector(".left");
 const right = document.querySelector(".right");
@@ -12,50 +12,47 @@ document.addEventListener("DOMContentLoaded", () => {
     createProjectButton.addEventListener('click', displayCreateProjectForm);
 })
 
+function clearRight() {
+    right.innerHTML = "";
+}
+
 function displayCreateProjectForm() {
 
-    const dialog = document.createElement("dialog");
     const form = document.createElement("form")
-    form.method = "dialog";
 
     const name = document.createElement("label");
     name.htmlFor = "title";
-    name.textContent = "Name: "
+    name.textContent = "Name: ";
 
     const nameInput = document.createElement("input");
     nameInput.type = "text";
     nameInput.setAttribute("required", true);
 
     const submit = document.createElement("button");
-    submit.type = "submit";
     submit.textContent = "Confirm";
-
-    submit.addEventListener('click', () => {
-        console.log(nameInput.value);
-        if (!nameInput.value) return;
-        dialog.close()
-    });
+    submit.style["margin-top"] = "10px";
+    submit.style.display = "block";
     
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         const projectName = nameInput.value;
         const project = projectList.createProject(projectName);
         displayProjectToList(project);
+        clearRight();
     })
 
     form.appendChild(name);
     form.appendChild(nameInput);
     form.appendChild(submit);
-    dialog.appendChild(form);
-    right.appendChild(dialog);
-    dialog.showModal();
+
+    clearRight();
+    right.appendChild(form);
+
 }
 
 function displayProjects() {
-
     const projects = projectList.getProjects();
     projects.forEach(displayProjectToList);
-
 }
 
 function displayProjectToList(project) {
@@ -121,31 +118,69 @@ function deleteProject(projectId) {
 
 function displayToDo(project, id) {
 
-    right.innerHTML = "";
+    clearRight();
 
     let todo = project.toDos.find(todo => id === todo.id);
 
-    const title = document.createElement("div");
-    title.textContent = todo.title;
-    right.appendChild(title);
+    const todoDiv = document.createElement("div");
+    todoDiv.id = "todo-div";
 
-    const description = document.createElement("div");
-    description.textContent = todo.description;
-    right.appendChild(description);
+    ToDo.todoAttributes.forEach((attribute) => {
+        const div = document.createElement("div");
 
-    const dueDate = document.createElement("div");
-    dueDate.textContent = todo.dueDate;
-    right.appendChild(dueDate);
+        const label = document.createElement("label");
+        label.textContent = attribute + ": ";
 
-    const priority = document.createElement("div");
-    priority.textContent = todo.priority;
-    right.appendChild(priority);
+        const span = document.createElement("span");
+        span.textContent = todo[attribute];
+        
+        div.appendChild(label);
+        div.appendChild(span);
 
-    const notes = document.createElement("div");
-    notes.textContent = todo.notes;
-    right.appendChild(notes);
+        todoDiv.appendChild(div);
+    });
 
-    const checkList = document.createElement("div");
-    checkList.textContent = todo.checkList;
-    right.appendChild(checkList);
+    right.appendChild(todoDiv);
+
+    const editButtonDiv = document.createElement("div");
+    const editButton = document.createElement("button");
+    editButton.textContent = "Edit Todo";
+    editButtonDiv.classList.add("last");
+    editButtonDiv.id = id;
+    editButtonDiv.appendChild(editButton);
+    right.appendChild(editButtonDiv);
+
+    editButton.addEventListener('click', () => displayEditTodoForm(project, id))
+}
+
+function displayEditTodoForm(project, id) {
+    const todo = project.toDos.find((todo) => todo.id === id);
+
+    const todoDiv = document.querySelector("#todo-div");
+    const divsToChange = todoDiv.querySelectorAll("div");
+
+    divsToChange.forEach((div) => {
+        const span = div.querySelector("span");
+        const input = document.createElement("input");
+        input.value = span.textContent;
+
+        div.removeChild(span);
+        div.appendChild(input);
+    })
+
+    const buttonDiv = right.querySelector(".last");
+    const button = buttonDiv.querySelector("button");
+    buttonDiv.removeChild(button);
+    
+    const submitButton = document.createElement("button");
+    submitButton.textContent = "Confirm changes";
+    buttonDiv.appendChild(submitButton);
+
+    submitButton.addEventListener('click', () => {
+        const inputBoxes = todoDiv.querySelectorAll("input");
+        const inputValues = Array.from(inputBoxes).map((inputBox) => inputBox.value);
+        todo.setValuesWithArray(inputValues);
+        displayToDo(project, id);
+    })
+    
 }
